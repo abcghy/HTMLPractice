@@ -25,19 +25,59 @@ const tabArrays = ref([
   }
 ]) 
 
-function handleTabClick(event, index) {
-	// console.log(index)
-	let icon = event.currentTarget.firstChild
-	let rect = icon.getBoundingClientRect()
-	console.log(rect)
-  selectIndex.value = index
+
+</script>
+
+<script>
+export default {
+	methods: {
+		getRelativePosition(element) {
+			let rect = element.getBoundingClientRect()
+			let wrapper = this.$refs.parent
+			let wrapperRect = wrapper.getBoundingClientRect()
+			return {
+				left: rect.left - wrapperRect.left,
+				top: rect.top - wrapperRect.top,
+				width: rect.width,
+				height: rect.height
+			}
+		},
+		moveSelector() {
+			// console.log(selectIndex.value)
+			let currentSelectIndex = this.selectIndex
+			let parent = this.$refs.parent
+			// console.log(currentSelectIndex)
+			let icon = parent.children[currentSelectIndex].firstChild
+			// let pos = icon.getBoundingClientRect()
+
+			let pos = this.getRelativePosition(icon)
+
+			console.log(pos)
+
+			let translate = pos.left + 50 + 'px'
+			this.$refs.selectCover.style.transform = `translate(${translate}, 20px)`
+		},
+		handleTabClick(event, index) {
+			// console.log(index)
+			let icon = event.currentTarget.firstChild
+			// let rect = icon.getBoundingClientRect()
+			// console.log(rect)
+			this.selectIndex = index
+			this.moveSelector()
+		},
+	},
+	mounted() {
+		this.moveSelector()
+	},
 }
+
+// moveSelector()
 </script>
 
 <template>
-<div id="wrapper">
-	<div id="selectCover"></div>
-	<ul>
+<div id="wrapper" ref="wrapper">
+	<div id="selectCover" ref="selectCover"></div>
+	<ul ref="parent">
 		<li v-for="(item, index) in tabArrays" :key="item.title" @click.stop="handleTabClick($event, index)">
 			<i :class="{select : selectIndex == index}"></i>
 			<span v-if="selectIndex == index">
@@ -52,7 +92,7 @@ function handleTabClick(event, index) {
 #wrapper {
 	background-color: #EFEFEF;
 	display: flex;
-	align-items: center;
+	/* align-items: center; */
 	justify-content: center;
 }
 
@@ -61,16 +101,23 @@ function handleTabClick(event, index) {
 	height: 60px;
 	border-radius: 30px;
 	background-color: green;
+	transition: transform 0.3s;
+	/* margin-left: 30px; */
+	/* padding-left: 30px; */
+	/* translate: transform(0px); */
+	/* left: 30px; */
+	/* translate: translateY(40px); */
 }
 
 ul {
+	margin: 0;
 	width: 360px;
 	padding: 0;
 	list-style-type: none;
 	display: flex;
 	/* align-items: center; */
 	justify-content: center;
-	margin-top: 100px;
+	/* margin-top: 100px; */
 	padding-top: 50px;
 	background-color: white;
 	border-radius: 16px;
