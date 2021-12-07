@@ -25,37 +25,46 @@ const tabArrays = ref([
   }
 ]) 
 
-function handleTabClick(index) {
-	console.log(index)
+function handleTabClick(event, index) {
+	// console.log(index)
+	let icon = event.currentTarget.firstChild
+	let rect = icon.getBoundingClientRect()
+	console.log(rect)
   selectIndex.value = index
 }
 </script>
 
 <template>
-<div>
+<div id="wrapper">
+	<div id="selectCover"></div>
 	<ul>
-		<li v-for="(item, index) in tabArrays" :key="item.title" @click="handleTabClick(index)">
+		<li v-for="(item, index) in tabArrays" :key="item.title" @click.stop="handleTabClick($event, index)">
 			<i :class="{select : selectIndex == index}"></i>
 			<span v-if="selectIndex == index">
 				{{item.title}}
 			</span>
-			<!-- <i class="iconfont" :class="item.icon"></i>
-			<span>{{item.title}}</span> -->
 		</li>
 	</ul>
 </div>
 </template>
 
 <style scoped>
-div {
+#wrapper {
 	background-color: #EFEFEF;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 }
 
+#selectCover {
+	width: 60px;
+	height: 60px;
+	border-radius: 30px;
+	background-color: green;
+}
+
 ul {
-	width: 320px;
+	width: 360px;
 	padding: 0;
 	list-style-type: none;
 	display: flex;
@@ -64,6 +73,7 @@ ul {
 	margin-top: 100px;
 	padding-top: 50px;
 	background-color: white;
+	border-radius: 16px;
 }
 
 li {
